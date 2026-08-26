@@ -34,11 +34,11 @@ it has actually demonstrated *per application*, and refuses to claim the rest.
 
 | | |
 |---:|:---|
-| **7,211** | tests passing |
+| **7,227** | tests passing |
 | **0** | tests failing |
 | **367** | test files |
 | **212** | modules |
-| **50** | closure checks (static, 35 s) |
+| **52** | closure checks (static, 35 s) |
 | **3 months** | one person, 312 commits |
 
 <sub>Measured on 25 · 08 · 2026 on the machine Eyes was built on. Not extrapolated.</sub>
