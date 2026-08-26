@@ -105,7 +105,9 @@ A product whose whole thesis is not overclaiming has to say this out loud.
 
 Eyes is not for sale as a download. We are looking for a partner — an integrator, a
 platform, or an industrial software vendor — with a real desktop-automation problem and
-users to point it at. Pilots, licensing and technical collaboration are all on the table.
+users to point it at. Pilots, licensing, an acquisition of the IP together with the
+person who built it — all of it is on the table. Tell me which of those you are thinking
+about and I will answer in the same terms.
 
 **[marc.arregui@gmail.com](mailto:marc.arregui@gmail.com?subject=Eyes%20—%20partnership)**
 
