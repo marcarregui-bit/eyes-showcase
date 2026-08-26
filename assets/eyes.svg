@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Eyes">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#5b7fe8" stop-opacity=".46"/>
+      <stop offset="55%" stop-color="#5b7fe8" stop-opacity=".10"/>
+      <stop offset="100%" stop-color="#5b7fe8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="#0D0D1E"/>
+  <circle cx="200" cy="200" r="150" fill="url(#g)"/>
+  <circle cx="200" cy="200" r="186" fill="none" stroke="#5b7fe8" stroke-width="3" opacity=".38"/>
+  <g transform="translate(200,200) scale(6.5) translate(-27.5,-7.5)">
+    <g>
+      <path d="M2 7.5 Q13.5 1 25 7.5 Q13.5 14 2 7.5 Z" fill="#edeef4"/>
+      <circle cx="13.5" cy="7.5" r="3.8" fill="#15152a"/>
+      <circle cx="14.7" cy="6.2" r=".95" fill="#fff" opacity=".85"/>
+    </g>
+    <g transform="translate(30,0)">
+      <path d="M2 7.5 Q13.5 1 25 7.5 Q13.5 14 2 7.5 Z" fill="#edeef4"/>
+      <circle cx="13.5" cy="7.5" r="3.8" fill="#15152a"/>
+      <circle cx="14.7" cy="6.2" r=".95" fill="#fff" opacity=".85"/>
+    </g>
+  </g>
+</svg>

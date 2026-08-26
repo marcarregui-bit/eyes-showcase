@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eyes — an agent that knows when it failed</title>
+<meta name="description" content="A Windows desktop agent that verifies every action and keeps a register of what it has actually demonstrated. Open to partnerships.">
+<meta property="og:title" content="Eyes — an agent that knows when it failed">
+<meta property="og:description" content="Desktop AI agents don't fail at clicking. They fail at not noticing.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://marcarregui-bit.github.io/eyes-showcase/">
+<meta property="og:image" content="https://marcarregui-bit.github.io/eyes-showcase/assets/eyes-social.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://marcarregui-bit.github.io/eyes-showcase/assets/eyes-social.png">
+<link rel="icon" href="assets/eyes-avatar.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+
+:root{
+  --fondo:#0D0D1E; --fondo2:#0A0A16; --sup:rgba(255,255,255,.055);
+  --sup2:rgba(255,255,255,.085); --borde:rgba(255,255,255,.09);
+  --texto:#E2E2E2; --dim:#8A8A9A; --acento:#5B7FE8; --acento2:#8AA4F0;
+  --verde:#6FCF97; --rojo:#E87070; --ambar:#F4A86F;
+  --sclera:#EDEEF4; --pupila:#15152A;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--fondo); color:var(--texto);
+  font-family:"Instrument Sans",-apple-system,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased;
+}
+.env{max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px)}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+
+/* ── héroe ───────────────────────────────────────────────── */
+.hero{padding:clamp(56px,10vh,110px) 0 clamp(40px,7vh,80px);text-align:center;
+      position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;left:50%;top:34%;width:min(760px,120vw);
+  height:min(760px,120vw);transform:translate(-50%,-50%);pointer-events:none;
+  background:radial-gradient(circle,rgba(91,127,232,.22) 0%,rgba(91,127,232,.05) 45%,transparent 70%)}
+.cara{display:flex;justify-content:center;gap:clamp(20px,4vw,38px);
+      margin-bottom:clamp(26px,5vh,44px);position:relative}
+.ojo{width:clamp(96px,17vw,168px);height:auto;overflow:visible;
+     transform-origin:center;animation:parpadeo 5.6s ease-in-out infinite}
+.sclera{fill:var(--sclera)}
+.pupila-g{transition:transform .09s linear}
+@keyframes parpadeo{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+h1{font-size:clamp(2.4rem,7vw,4.6rem);line-height:1.02;letter-spacing:-.035em;
+   font-weight:700;text-wrap:balance;position:relative}
+h1 em{font-style:normal;color:var(--acento2)}
+.sub{margin:20px auto 0;max-width:62ch;font-size:clamp(1.05rem,2.3vw,1.28rem);
+     color:var(--dim);text-wrap:balance;position:relative}
+.sub b{color:var(--texto);font-weight:600}
+.acciones{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
+          margin-top:34px;position:relative}
+.btn{display:inline-block;padding:12px 22px;border-radius:8px;text-decoration:none;
+     font-weight:600;font-size:.95rem;border:1px solid transparent;transition:.15s}
+.btn-p{background:var(--acento);color:#fff}
+.btn-p:hover{background:var(--acento2)}
+.btn-s{border-color:var(--borde);color:var(--texto);background:var(--sup)}
+.btn-s:hover{background:var(--sup2)}
+
+/* ── cifras ──────────────────────────────────────────────── */
+.cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+        gap:1px;background:var(--borde);border:1px solid var(--borde);
+        border-radius:10px;overflow:hidden;margin:clamp(30px,6vh,54px) 0}
+.cifras div{background:var(--fondo2);padding:20px 18px;text-align:center}
+.cifras .v{font-family:"IBM Plex Mono",monospace;font-size:1.75rem;font-weight:600;
+           color:var(--acento2);font-variant-numeric:tabular-nums;line-height:1}
+.cifras .k{font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;
+           color:var(--dim);margin-top:9px}
+
+/* ── secciones ───────────────────────────────────────────── */
+section{padding:clamp(46px,8vh,84px) 0;border-top:1px solid var(--borde)}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.16em;
+         text-transform:uppercase;color:var(--acento);margin-bottom:12px}
+h2{font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.1;letter-spacing:-.02em;
+   font-weight:700;margin-bottom:14px;text-wrap:balance}
+.intro{color:var(--dim);max-width:64ch;margin-bottom:34px;font-size:1.05rem}
+
+.rejilla{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:16px}
+.tarj{background:var(--sup);border:1px solid var(--borde);border-radius:10px;padding:20px 22px}
+.tarj h3{font-size:1.03rem;font-weight:600;margin-bottom:7px}
+.tarj p{font-size:.94rem;color:var(--dim);line-height:1.55}
+.tarj .marca{font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.1em;
+             text-transform:uppercase;color:var(--acento);display:block;margin-bottom:9px}
+
+/* ── panel de honestidad ─────────────────────────────────── */
+.registro{background:var(--fondo2);border:1px solid var(--borde);border-radius:10px;
+          overflow:hidden;font-family:"IBM Plex Mono",monospace;font-size:.88rem}
+.registro .fila{display:grid;grid-template-columns:auto 1fr auto;gap:14px;
+                padding:12px 18px;border-top:1px solid var(--borde);align-items:center}
+.registro .fila:first-child{border-top:none;background:var(--sup);
+   font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.registro .p{white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--dim)}
+.et{padding:2px 9px;border-radius:3px;font-size:.68rem;letter-spacing:.07em;
+    text-transform:uppercase;white-space:nowrap}
+.e-ok{background:rgba(111,207,151,.15);color:var(--verde)}
+.e-mal{background:rgba(232,112,112,.15);color:var(--rojo)}
+.e-med{background:rgba(244,168,111,.15);color:var(--ambar)}
+.pie-registro{color:var(--dim);font-size:.92rem;margin-top:18px;max-width:64ch}
+
+/* ── lo que no hace ──────────────────────────────────────── */
+.no{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.no div{border-left:2px solid var(--rojo);padding:3px 0 3px 16px}
+.no b{display:block;font-size:.97rem;font-weight:600;margin-bottom:2px}
+.no span{font-size:.9rem;color:var(--dim)}
+
+/* ── cierre ──────────────────────────────────────────────── */
+.cierre{text-align:center;padding-bottom:clamp(56px,10vh,100px)}
+.cierre h2{margin-bottom:16px}
+.cierre p{color:var(--dim);max-width:56ch;margin:0 auto 28px}
+footer{border-top:1px solid var(--borde);padding:26px 0 46px;color:var(--dim);
+       font-size:.85rem;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer a{color:var(--dim)}
+a{color:var(--acento2)}
+:focus-visible{outline:2px solid var(--acento);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){
+  .ojo{animation:none}
+  *{transition:none!important}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  .registro .fila{grid-template-columns:1fr auto;gap:8px}
+  .registro .p{display:none}
+}
+
+</style>
+</head>
+<body>
+<div class="hero"><div class="env">
+<div class="cara" id="cara"><svg class="ojo" viewBox="0 0 27 15" aria-hidden="true"><path class="sclera" d="M2 7.5 Q13.5 1 25 7.5 Q13.5 14 2 7.5 Z"/><g class="pupila-g" id="pup1"><circle cx="13.5" cy="7.5" r="3.8" fill="#15152a"/><circle cx="14.7" cy="6.2" r=".95" fill="#fff" opacity=".85"/></g></svg><svg class="ojo" viewBox="0 0 27 15" aria-hidden="true"><path class="sclera" d="M2 7.5 Q13.5 1 25 7.5 Q13.5 14 2 7.5 Z"/><g class="pupila-g" id="pup2"><circle cx="13.5" cy="7.5" r="3.8" fill="#15152a"/><circle cx="14.7" cy="6.2" r=".95" fill="#fff" opacity=".85"/></g></svg></div>
+<h1>An agent that knows<br>when it <em>failed</em></h1>
+<p class="sub">Desktop AI agents don't fail at clicking. They fail at not noticing. <b>Eyes</b> is a Windows agent that verifies the effect of every action, keeps a register of what it has actually demonstrated per application, and <b>refuses to claim the rest</b>.</p>
+<div class="acciones"><a class="btn btn-p" href="#partnership">Partnership enquiries</a><a class="btn btn-s" href="#hace">What it does today</a></div>
+</div></div>
+<div class="env"><div class="cifras"><div><div class="v">7,211</div><div class="k">tests passing</div></div><div><div class="v">0</div><div class="k">tests failing</div></div><div><div class="v">367</div><div class="k">test files</div></div><div><div class="v">212</div><div class="k">modules</div></div><div><div class="v">50</div><div class="k">closure checks</div></div><div><div class="v">3</div><div class="k">months, one person</div></div></div></div>
+<section id="hace"><div class="env"><div class="eyebrow">What it does today</div><h2>Eight things, all of them running</h2><p class="intro">Not a roadmap. Every item below is exercised by the test suite and demonstrable on the machine it was built on.</p><div class="rejilla">
+<div class="tarj"><span class="marca">Escritorio</span><h3>It drives Windows, not an API</h3><p>Opens apps, types, clicks, navigates, reads the screen. Word, Excel, PowerPoint and Outlook through COM; LibreOffice through UNO when Office isn't there. The browser through CDP. No RPA recorder, no brittle coordinates.</p></div>
+<div class="tarj"><span class="marca">Verificación</span><h3>Every action is checked against the world</h3><p>A universal oracle reads the effect of an action — object state, then UI tree, then pixels — and a step is only closed when the effect is confirmed. A sentence is not evidence; a file on disk is.</p></div>
+<div class="tarj"><span class="marca">Entregables</span><h3>It produces documents, not summaries</h3><p>A drafter with a data contract, a judge that can send it back, and a verified PDF on disk. If the composer can't run, it says so and hands you the result another way instead of declaring the job done.</p></div>
+<div class="tarj"><span class="marca">Análisis</span><h3>Big spreadsheets, answered locally</h3><p>A local columnar store (DuckDB) ingests whole workbooks — millions of rows — and answers questions in place. The data never leaves the machine; only a pseudonymised schema does.</p></div>
+<div class="tarj"><span class="marca">Privacidad</span><h3>What crosses the wire is written down</h3><p>Pseudonymisation with an ephemeral in-RAM key, an allowlist on generated SQL, no disk or network reachable from a query, exfiltration verbs classified and confirmed. Voice is local by default.</p></div>
+<div class="tarj"><span class="marca">Memoria</span><h3>It learns this machine, not the internet</h3><p>A local index of your paths and a click memory that remembers what worked where, so the second time is faster than the first.</p></div>
+<div class="tarj"><span class="marca">Control</span><h3>Stoppable, and honest about it</h3><p>Pause, resume and stop at any point. A halted batch reports how many actions ran. Destructive keys are blocked when it can't verify what's in front — including its own window and your terminal.</p></div>
+<div class="tarj"><span class="marca">Degradación</span><h3>Missing capability is announced, not hidden</h3><p>A pre-flight check at startup states what this machine can actually deliver today: no spaCy, no Office, no local model. Silence about a missing capability is the failure mode it was built to avoid.</p></div>
+</div></div></section>
+<section><div class="env"><div class="eyebrow">The difference</div><h2>It keeps a register, and the register can say no</h2><p class="intro">On the public desktop benchmark (OSWorld) the state of the art sits near 20% success against a 72% human baseline. The unsolved problem is not dexterity — it is that agents don't recognise their own failures. Eyes writes down what it has proven, per application, with the evidence that proved it. A capability with one single success is flagged as untested ground. A capability you vetoed stays vetoed, even if the oracle later succeeds.</p><div class="registro"><div class="fila"><span>capability</span><span>application</span><span>verdict</span></div>
+<div class="fila"><span>press_key : sheet count +1</span><span class="p">excel.exe &nbsp;·&nbsp; 5/5</span><span class="et e-ok">proven</span></div>
+<div class="fila"><span>Font.Bold via COM</span><span class="p">winword.exe &nbsp;·&nbsp; 5/5</span><span class="et e-ok">proven</span></div>
+<div class="fila"><span>Cursor.MoveTo via UNO</span><span class="p">libreoffice &nbsp;·&nbsp; 0/3</span><span class="et e-mal">disproven</span></div>
+<div class="fila"><span>play track by URI</span><span class="p">spotify.exe &nbsp;·&nbsp; 2/3</span><span class="et e-med">unstable</span></div>
+</div><p class="pie-registro">Read straight out of the running system, not from a slide. When Eyes is asked what it can do, this is what it reads from — and it will tell you what it cannot.</p></div></section>
+<section><div class="env"><div class="eyebrow">What it does not do</div><h2>The part most pages leave out</h2><p class="intro">A product whose whole thesis is not overclaiming has to start here.</p><div class="no">
+<div><b>Windows 10/11 only</b><span>No macOS, no Linux. It talks to Win32, COM and UI Automation.</span></div>
+<div><b>Spanish interface</b><span>The agent thinks in Spanish today. Not a hard constraint, but it's the truth right now.</span></div>
+<div><b>No installer yet</b><span>It runs from its own folder. It has never been installed on a second machine — and until it is, we don't claim it works there.</span></div>
+<div><b>No production customers</b><span>Three months old, one person, zero paying users. The tests are real; the traction isn't there yet.</span></div>
+<div><b>Source is not public</b><span>This repository is a showcase. The code is proprietary and stays private.</span></div>
+</div></div></section>
+<section class="cierre" id="partnership"><div class="env"><div class="eyebrow">Partnership</div><h2>Looking for the right partner</h2><p>Eyes is not for sale as a download. We are looking for a partner — an integrator, a platform, or an industrial software vendor — with a real desktop-automation problem and users to point it at. Pilots, licensing and technical collaboration are all on the table.</p><a class="btn btn-p" href="mailto:marc.arregui@gmail.com?subject=Eyes%20—%20partnership">marc.arregui@gmail.com</a></div></section>
+<footer><div class="env" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;width:100%"><span>Eyes — autonomous Windows desktop agent. © 2026 Marc Arregui. All rights reserved.</span><span class="mono">Figures measured 25 · 08 · 2026</span></div></footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+  var cara = document.getElementById('cara');
+  var pupilas = [document.getElementById('pup1'), document.getElementById('pup2')];
+  if (!cara || !pupilas[0]) return;
+  // Las pupilas siguen al cursor, como en el producto. Radio en unidades del
+  // viewBox (27x15): la pupila real se mueve unas 4 unidades.
+  function mover(e){
+    var r = cara.getBoundingClientRect();
+    var cx = r.left + r.width/2, cy = r.top + r.height/2;
+    var dx = (e.clientX - cx) / Math.max(1, r.width/2);
+    var dy = (e.clientY - cy) / Math.max(1, r.height*1.6);
+    dx = Math.max(-1, Math.min(1, dx)); dy = Math.max(-1, Math.min(1, dy));
+    var tx = (dx*3.4).toFixed(2), ty = (dy*1.6).toFixed(2);
+    pupilas.forEach(function(p){ p.setAttribute('transform','translate('+tx+','+ty+')'); });
+  }
+  window.addEventListener('mousemove', mover, {passive:true});
+  window.addEventListener('blur', function(){
+    pupilas.forEach(function(p){ p.setAttribute('transform','translate(0,0)'); });
+  });
+})();
+</script>
+</body>
+</html>
