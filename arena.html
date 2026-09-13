@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en" data-idioma="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Measured on a machine it had never seen — Eyes</title>
+<meta name="description" content="Eyes on Windows Agent Arena: 15 tasks scored by Microsoft's own evaluator, zero false positives, and what the number does not say.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --fondo:#0D0D1E;
+    --sup:rgba(255,255,255,.055);
+    --borde:rgba(255,255,255,.09);
+    --borde-f:rgba(255,255,255,.16);
+    --texto:#E2E2E2;
+    --dim:#8A8A9A;
+    --acento:#5B7FE8;
+    --verde:#6FCF97;
+    --rojo:#E87070;
+    --ambar:#F4A86F;
+    --ambar-fondo:rgba(244,168,111,.07);
+    --sans:"Instrument Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+
+  [data-idioma="en"] .es{display:none}
+  [data-idioma="es"] .en{display:none}
+
+  body{
+    background:var(--fondo);color:var(--texto);font-family:var(--sans);
+    font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;
+  }
+  .env{max-width:720px;margin:0 auto;padding:0 24px}
+  p{margin:0 0 1.15em;max-width:64ch;color:var(--texto)}
+  b,strong{font-weight:600}
+  em{font-style:italic}
+  a{color:var(--texto)}
+
+  .eyebrow{
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--dim);
+  }
+
+  /* --------------------------------------------------- barra superior */
+  .barra{
+    display:flex;justify-content:space-between;align-items:center;gap:16px;
+    padding:22px 0;border-bottom:1px solid var(--borde);flex-wrap:wrap;
+  }
+  .volver{
+    font-family:var(--mono);font-size:12px;letter-spacing:.06em;
+    text-decoration:none;color:var(--dim);
+  }
+  .volver:hover{color:var(--texto)}
+  .idiomas{display:flex;border:1px solid var(--borde);border-radius:6px;overflow:hidden}
+  .idiomas button{
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.1em;
+    background:transparent;color:var(--dim);border:0;cursor:pointer;padding:7px 13px;
+  }
+  .idiomas button[aria-pressed="true"]{background:var(--texto);color:var(--fondo)}
+  .idiomas button:focus-visible{outline:2px solid var(--acento);outline-offset:-2px}
+
+  /* ---------------------------------------------------------- cabecera */
+  header{padding:56px 0 40px}
+  h1{
+    font-size:clamp(32px,5.6vw,50px);line-height:1.1;font-weight:700;
+    letter-spacing:-.022em;text-wrap:balance;margin-bottom:20px;
+  }
+  h1 em{color:var(--ambar);font-style:normal}
+  .sub{font-size:19px;color:var(--dim);max-width:56ch}
+
+  h2{
+    font-size:26px;font-weight:600;letter-spacing:-.015em;text-wrap:balance;
+    margin:0 0 16px;
+  }
+  h3{font-size:17px;font-weight:600;margin:0 0 8px}
+  section{padding:46px 0;border-top:1px solid var(--borde)}
+
+  /* ------------------------------------------------------------ cifras */
+  .cifras{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:28px;background:var(--sup);border:1px solid var(--borde);
+    border-radius:10px;padding:28px 30px;margin:8px 0 28px;
+  }
+  .cifras .v{
+    font-family:var(--mono);font-size:38px;font-weight:500;line-height:1;
+    letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+  }
+  .cifras .k{font-size:13px;color:var(--dim);margin-top:9px;line-height:1.5}
+  .v-ok{color:var(--verde)} .v-mal{color:var(--rojo)} .v-med{color:var(--ambar)}
+
+  /* ---------------------------------- el bloque pegado a cada cifra */
+  .reverso{
+    border-left:3px solid var(--ambar);background:var(--ambar-fondo);
+    padding:20px 22px;margin:26px 0;border-radius:0 8px 8px 0;
+  }
+  .reverso .eyebrow{color:var(--ambar)}
+  .reverso p{margin:10px 0 0;font-size:15.5px}
+  .reverso ul{margin:12px 0 0;padding-left:20px;font-size:15.5px}
+  .reverso li{margin:8px 0}
+
+  /* ------------------------------------------------------- desenlaces */
+  .registro{
+    border:1px solid var(--borde);border-radius:10px;overflow:hidden;margin:24px 0;
+  }
+  .fila{
+    display:grid;grid-template-columns:112px 1fr;gap:20px;align-items:baseline;
+    padding:18px 22px;border-bottom:1px solid var(--borde);background:var(--sup);
+  }
+  .fila:last-child{border-bottom:0}
+  .et{
+    font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.11em;
+    text-transform:uppercase;
+  }
+  .e-ok{color:var(--verde)} .e-mal{color:var(--rojo)} .e-med{color:var(--ambar)}
+  .fila p{margin:0;font-size:15.5px;color:var(--dim)}
+  @media (max-width:560px){.fila{grid-template-columns:1fr;gap:6px}}
+
+  /* ------------------------------------------------------------ tabla */
+  .tabla-env{overflow-x:auto;margin:22px 0}
+  table{border-collapse:collapse;width:100%;font-size:15px}
+  th,td{text-align:left;padding:10px 16px 10px 0;border-bottom:1px solid var(--borde)}
+  th{
+    font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--dim);
+  }
+  td.num,th.num{
+    font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;
+    padding-right:0;
+  }
+  tr.destacada td{font-weight:600}
+
+  /* --------------------------------------------------------- defectos */
+  .defectos{list-style:none;margin:22px 0;font-size:15.5px}
+  .defectos li{
+    padding:13px 0;border-bottom:1px solid var(--borde);
+    display:grid;grid-template-columns:1fr auto;gap:18px;align-items:baseline;
+  }
+  .defectos .coste{
+    font-family:var(--mono);font-size:12.5px;color:var(--ambar);white-space:nowrap;
+  }
+  .defectos .matiz{color:var(--dim)}
+  @media (max-width:540px){.defectos li{grid-template-columns:1fr;gap:5px}}
+
+  pre{
+    font-family:var(--mono);font-size:13px;line-height:1.7;background:var(--sup);
+    border:1px solid var(--borde);border-radius:8px;padding:18px 20px;
+    overflow-x:auto;margin:22px 0;color:var(--dim);
+  }
+
+  .btn{
+    display:inline-block;font-size:15px;font-weight:500;text-decoration:none;
+    padding:12px 22px;border-radius:8px;border:1px solid var(--borde-f);
+    color:var(--texto);transition:border-color .15s ease,background .15s ease;
+  }
+  .btn:hover{border-color:var(--acento);background:var(--sup)}
+  .btn:focus-visible{outline:2px solid var(--acento);outline-offset:3px}
+
+  footer{
+    padding:40px 0 72px;border-top:1px solid var(--borde);
+    font-size:14px;color:var(--dim);
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="env">
+  <div class="barra">
+    <a class="volver" href="./index.html">&larr; Eyes</a>
+    <div class="idiomas" role="group" aria-label="Language">
+      <button type="button" data-ir="en">EN</button>
+      <button type="button" data-ir="es">ES</button>
+    </div>
+  </div>
+</div>
+
+<div class="env">
+<header>
+  <div class="eyebrow">
+    <span class="en">Windows Agent Arena &middot; Microsoft &amp; CMU &middot; September 2026</span>
+    <span class="es">Windows Agent Arena &middot; Microsoft y CMU &middot; septiembre 2026</span>
+  </div>
+  <h1 class="en">Measured on a machine<br>it had <em>never seen</em></h1>
+  <h1 class="es">Medido en una m&aacute;quina<br>que <em>no hab&iacute;a visto nunca</em></h1>
+  <p class="sub en">
+    Everything on the front page is demonstrable on the machine Eyes was built
+    on. This page is the other half: a clean Windows&nbsp;11, a benchmark
+    nobody here wrote, and an evaluator nobody here controls.
+  </p>
+  <p class="sub es">
+    Todo lo de la portada es demostrable en la m&aacute;quina donde Eyes se
+    construy&oacute;. Esta p&aacute;gina es la otra mitad: un Windows&nbsp;11
+    limpio, un banco de pruebas que no hemos escrito, y un evaluador que no
+    controlamos.
+  </p>
+</header>
+</div>
+
+<section><div class="env">
+  <div class="eyebrow"><span class="en">The number</span><span class="es">El n&uacute;mero</span></div>
+  <h2 class="en">Six of fifteen, and nothing claimed that wasn&rsquo;t done</h2>
+  <h2 class="es">Seis de quince, y nada reclamado sin hacerlo</h2>
+
+  <p class="en">
+    Windows Agent Arena is a benchmark from Microsoft and Carnegie Mellon: 154
+    tasks on a real Windows&nbsp;11 machine, graded by scripts that inspect the
+    <b>final state of the system</b>. What the agent claims it did counts for
+    nothing.
+  </p>
+  <p class="es">
+    Windows Agent Arena es un banco de pruebas de Microsoft y Carnegie Mellon:
+    154 tareas sobre un Windows&nbsp;11 real, corregidas por scripts que miran
+    el <b>estado final de la m&aacute;quina</b>. Da igual lo que el agente diga
+    que hizo.
+  </p>
+
+  <div class="cifras">
+    <div>
+      <div class="v">40%</div>
+      <div class="k en">6 of 15 measured tasks, scored by the benchmark&rsquo;s own evaluator</div>
+      <div class="k es">6 aciertos de 15 tareas medidas, seg&uacute;n el evaluador del propio benchmark</div>
+    </div>
+    <div>
+      <div class="v v-mal">0</div>
+      <div class="k en">false positives &mdash; no task claimed that wasn&rsquo;t achieved</div>
+      <div class="k es">falsos positivos &mdash; ninguna tarea reclamada sin lograrla</div>
+    </div>
+    <div>
+      <div class="v v-med">4&thinsp;/&thinsp;6</div>
+      <div class="k en">successes the agent did <em>not</em> claim, because it couldn&rsquo;t verify them</div>
+      <div class="k es">aciertos que el agente <em>no</em> se atribuy&oacute;, por no poder verificarlos</div>
+    </div>
+  </div>
+
+  <div class="reverso">
+    <div class="eyebrow"><span class="en">What this number does not say</span><span class="es">Lo que este n&uacute;mero no dice</span></div>
+    <ul class="en">
+      <li><b>Fifteen tasks are not a measurement of the whole.</b> The confidence interval is enormous. At fifty it would start to mean something.</li>
+      <li><b>The sample is deliberately biased</b> toward unexplored task domains. It was built to find defects, not to estimate the rate across all 154.</li>
+      <li><b>On some tasks Eyes didn&rsquo;t use the GUI.</b> Asked to open Notepad and save a file, it wrote the file directly. The evaluator only inspects the file, so it scored as a success &mdash; but it isn&rsquo;t the same thing.</li>
+      <li><b>There is no comparable baseline.</b> The paper&rsquo;s reference agent scores 0 today: its response parser is tuned for a model that no longer exists.</li>
+    </ul>
+    <ul class="es">
+      <li><b>Quince tareas no son una medici&oacute;n del conjunto.</b> El intervalo de confianza es enorme. Con cincuenta empezar&iacute;a a significar algo.</li>
+      <li><b>La muestra est&aacute; sesgada a prop&oacute;sito</b> hacia dominios sin explorar. Serv&iacute;a para encontrar fallos, no para estimar la tasa de las 154.</li>
+      <li><b>En algunas tareas Eyes no us&oacute; la interfaz.</b> Cuando le ped&iacute;an abrir el Bloc de notas y guardar un fichero, escribi&oacute; el fichero directamente. El evaluador s&oacute;lo mira el fichero, as&iacute; que lo puntu&oacute; como acierto &mdash; pero no es lo mismo.</li>
+      <li><b>No hay l&iacute;nea base comparable.</b> El agente de referencia del art&iacute;culo saca 0 hoy: su lector de respuestas est&aacute; afinado para un modelo que ya no existe.</li>
+    </ul>
+  </div>
+</div></section>
+
+<section><div class="env">
+  <div class="eyebrow"><span class="en">The three outcomes</span><span class="es">Los tres desenlaces</span></div>
+  <h2 class="en">The register can say &ldquo;I don&rsquo;t know&rdquo;</h2>
+  <h2 class="es">El registro puede decir &laquo;no lo s&eacute;&raquo;</h2>
+
+  <p class="en">
+    Most agents have two states: done or failed. When they can&rsquo;t verify
+    something, it falls into the optimistic one. Eyes has three, and the third
+    is what changes how far you can trust the other two.
+  </p>
+  <p class="es">
+    Casi todos los agentes tienen dos estados: hecho o fallido. Cuando no
+    pueden verificar algo, cae en el optimista. Eyes tiene tres, y el tercero
+    es el que cambia hasta d&oacute;nde te puedes fiar de los otros dos.
+  </p>
+
+  <div class="registro">
+    <div class="fila">
+      <span class="et e-ok"><span class="en">Achieved</span><span class="es">Logrado</span></span>
+      <p class="en">There is programmatic proof the task is done: the file exists with the right contents, the window is the one it had to be.</p>
+      <p class="es">Hay prueba program&aacute;tica de que la tarea est&aacute; hecha: el fichero existe con su contenido, la ventana es la que ten&iacute;a que ser.</p>
+    </div>
+    <div class="fila">
+      <span class="et e-mal"><span class="en">Failed</span><span class="es">Fallido</span></span>
+      <p class="en">The agent states that it could not. That is a claim, not a silent give-up.</p>
+      <p class="es">El agente afirma que no ha podido. Es una afirmaci&oacute;n, no una rendici&oacute;n silenciosa.</p>
+    </div>
+    <div class="fila">
+      <span class="et e-med"><span class="en">Unknown</span><span class="es">Desconocido</span></span>
+      <p class="en">It may be done and it may not. The agent says so instead of picking the answer that flatters it.</p>
+      <p class="es">Puede que est&eacute; hecho y puede que no. El agente lo dice en vez de elegir la respuesta que le conviene.</p>
+    </div>
+  </div>
+
+  <h3 class="en">The cost of honesty</h3>
+  <h3 class="es">El coste de honestidad</h3>
+  <p class="en">
+    Of the six successes, <b>four were achieved without the agent knowing
+    it</b>. It saved the correct file, its internal check couldn&rsquo;t
+    confirm that, so it didn&rsquo;t take credit. The external evaluator
+    confirmed it.
+  </p>
+  <p class="es">
+    De los seis aciertos, <b>cuatro los hizo sin saber que los hab&iacute;a
+    hecho</b>. Guard&oacute; el fichero correcto, su verificaci&oacute;n interna
+    no pudo confirmarlo, y no se lo atribuy&oacute;. El evaluador externo
+    s&iacute; lo confirm&oacute;.
+  </p>
+  <p class="en">
+    That 67&nbsp;% is a figure almost nobody publishes, and it&rsquo;s the most
+    actionable one here: <b>it is success left unclaimed, not capability
+    missing</b>. Lowering it doesn&rsquo;t require the agent to learn anything
+    new.
+  </p>
+  <p class="es">
+    Ese 67&nbsp;% es una cifra que casi nadie publica, y es la m&aacute;s
+    accionable: <b>es acierto que se deja sin reclamar, no capacidad que
+    falte</b>. Bajarlo no requiere que el agente sepa hacer m&aacute;s cosas.
+  </p>
+</div></section>
+
+<section><div class="env">
+  <div class="eyebrow"><span class="en">What it took</span><span class="es">Qu&eacute; cost&oacute; llegar</span></div>
+  <h2 class="en">Ten defects a foreign machine found in an afternoon</h2>
+  <h2 class="es">Diez defectos que una m&aacute;quina ajena encontr&oacute; en una tarde</h2>
+
+  <p class="en">
+    Before this run, Eyes had only ever executed on its author&rsquo;s machine.
+    Running it on a freshly installed Windows&nbsp;11 surfaced ten defects.
+    <b>Not one of them reproduced on the development machine.</b>
+  </p>
+  <p class="es">
+    Antes de esta prueba, Eyes s&oacute;lo se hab&iacute;a ejecutado en la
+    m&aacute;quina de su autor. Correrlo en un Windows&nbsp;11 reci&eacute;n
+    instalado destap&oacute; diez defectos. <b>Ninguno se reproduc&iacute;a en la
+    m&aacute;quina de desarrollo.</b>
+  </p>
+
+  <ul class="defectos en">
+    <li><span>An emoji in a trace message killed the whole task <span class="matiz">&mdash; a clean Windows console can&rsquo;t encode it</span></span><span class="coste">task lost</span></li>
+    <li><span>Three invisible bytes at the start of a text file</span><span class="coste">1.0 &rarr; 0.0</span></li>
+    <li><span>History trimming emptied the conversation, and the model call went out with no messages at all</span><span class="coste">34% of tasks</span></li>
+    <li><span>The anti-hallucination guard watched only the mouse: with the keyboard it saw nothing</span><span class="coste">false positives</span></li>
+    <li><span>A quotation mark slipped inside the filename being verified</span><span class="coste">success &rarr; &ldquo;unknown&rdquo;</span></li>
+    <li><span>The app was required to be open even when the file itself could be checked</span><span class="coste">success &rarr; &ldquo;unknown&rdquo;</span></li>
+  </ul>
+  <ul class="defectos es">
+    <li><span>Un emoji en un mensaje de traza tumbaba la tarea entera <span class="matiz">&mdash; la consola de un Windows limpio no sabe escribirlo</span></span><span class="coste">tarea perdida</span></li>
+    <li><span>Tres bytes invisibles al principio de un fichero de texto</span><span class="coste">1.0 &rarr; 0.0</span></li>
+    <li><span>El historial se vaciaba al recortarlo, y la llamada al modelo sal&iacute;a sin mensajes</span><span class="coste">34% de las tareas</span></li>
+    <li><span>El guardia anti-alucinaci&oacute;n s&oacute;lo miraba el rat&oacute;n: con el teclado no se enteraba</span><span class="coste">falsos positivos</span></li>
+    <li><span>Una comilla se colaba dentro del nombre del fichero a verificar</span><span class="coste">acierto &rarr; &laquo;no lo s&eacute;&raquo;</span></li>
+    <li><span>Se exig&iacute;a la aplicaci&oacute;n abierta aun pudiendo comprobar el fichero</span><span class="coste">acierto &rarr; &laquo;no lo s&eacute;&raquo;</span></li>
+  </ul>
+
+  <div class="reverso">
+    <div class="eyebrow"><span class="en">The pattern, worth more than the ten fixes</span><span class="es">El patr&oacute;n, que vale m&aacute;s que los diez arreglos</span></div>
+    <div class="en">
+      <p>
+        Three of the defects were <b>the same disease</b>: the unknown
+        collapsing into the optimistic. A judge that can&rsquo;t tell decides
+        &ldquo;done&rdquo;. A guard that isn&rsquo;t looking decides
+        &ldquo;done&rdquo;. A warning nobody reads becomes &ldquo;done&rdquo;.
+      </p>
+      <p>
+        Three more were <b>the observer sharing space with the observed</b>: a
+        trace message that killed the very task it was describing, and the
+        agent writing its reports inside the directory of the program that was
+        measuring it.
+      </p>
+    </div>
+    <div class="es">
+      <p>
+        Tres de los defectos eran <b>la misma enfermedad</b>: lo desconocido
+        colapsando hacia lo optimista. El juez que no sabe decide
+        &laquo;hecho&raquo;. El guardia que no mira decide &laquo;hecho&raquo;.
+        El aviso que nadie lee se convierte en &laquo;hecho&raquo;.
+      </p>
+      <p>
+        Otros tres eran <b>el observador compartiendo espacio con lo
+        observado</b>: un mensaje de traza que mataba la tarea que
+        describ&iacute;a, y el agente escribiendo sus informes dentro del
+        directorio del programa que lo med&iacute;a.
+      </p>
+    </div>
+  </div>
+
+  <div class="tabla-env">
+    <table>
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+          <th class="num"><span class="en">Before</span><span class="es">Antes</span></th>
+          <th class="num"><span class="en">After</span><span class="es">Despu&eacute;s</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="destacada">
+          <td><span class="en">False positives</span><span class="es">Falsos positivos</span></td>
+          <td class="num"><span class="en">5 of 17</span><span class="es">5 de 17</span></td>
+          <td class="num"><span class="en">0 of 15</span><span class="es">0 de 15</span></td>
+        </tr>
+        <tr>
+          <td><span class="en">Tasks killed by a defect of our own</span><span class="es">Tareas muertas por un fallo propio</span></td>
+          <td class="num">34%</td><td class="num">0%</td>
+        </tr>
+        <tr>
+          <td><span class="en">Median time per task</span><span class="es">Mediana de tiempo por tarea</span></td>
+          <td class="num">&mdash;</td><td class="num">213 s</td>
+        </tr>
+        <tr>
+          <td><span class="en">Median model calls per task</span><span class="es">Mediana de llamadas al modelo</span></td>
+          <td class="num">&mdash;</td><td class="num">8</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="en">
+    The last two defects on that list &mdash; the quotation mark and the
+    open-app requirement &mdash; were fixed <em>after</em> this measurement.
+    They target precisely that 67&nbsp;%, and they have not been measured yet.
+  </p>
+  <p class="es">
+    Los dos &uacute;ltimos defectos &mdash;la comilla y la aplicaci&oacute;n
+    abierta&mdash; se arreglaron <em>despu&eacute;s</em> de esta medici&oacute;n.
+    Atacan justo ese 67&nbsp;% y todav&iacute;a no se han medido.
+  </p>
+</div></section>
+
+<section><div class="env">
+  <div class="eyebrow"><span class="en">How it was run</span><span class="es">C&oacute;mo se reprodujo</span></div>
+  <h2 class="en">The machine is checked before it is measured</h2>
+  <h2 class="es">La m&aacute;quina se comprueba antes de medirla</h2>
+
+<pre class="en">Windows 11 Enterprise Evaluation, clean image
+The harness runs on Linux; Eyes runs inside the VM
+The VM is checked against its reference snapshot before
+  every run: 56 of 56 watched paths match
+Scoring: the benchmark's own evaluators</pre>
+<pre class="es">Windows 11 Enterprise Evaluation, imagen limpia
+El arn&eacute;s corre en Linux; Eyes corre dentro de la VM
+Se verifica que la VM coincide con su foto de referencia
+  antes de cada tanda: 56 de 56 rutas vigiladas
+Puntuaci&oacute;n: los evaluadores del propio benchmark</pre>
+
+  <p class="en">
+    That check exists because an earlier run left a file behind and the
+    evaluator scored it as fresh work. A false 1.0, caught by comparing the
+    file&rsquo;s timestamp against the run&rsquo;s start time. A benchmark you
+    don&rsquo;t audit measures your leftovers.
+  </p>
+  <p class="es">
+    Esa comprobaci&oacute;n existe porque una corrida anterior dej&oacute; un
+    fichero y el evaluador lo puntu&oacute; como trabajo nuevo. Un 1.0 falso,
+    cazado comparando la fecha del fichero con la hora de arranque. Un
+    benchmark que no auditas mide tus restos.
+  </p>
+
+  <p style="margin-top:32px">
+    <a class="btn" href="./index.html"><span class="en">&larr; Back to Eyes</span><span class="es">&larr; Volver a Eyes</span></a>
+  </p>
+</div></section>
+
+<footer><div class="env">
+  <p class="en">
+    Eyes is a desktop agent for Windows. This page describes a September 2026
+    measurement over a 15-task sample and states explicitly what it does not
+    prove.
+  </p>
+  <p class="es">
+    Eyes es un agente de escritorio para Windows. Esta p&aacute;gina describe
+    una medici&oacute;n de septiembre de 2026 sobre una muestra de 15 tareas y
+    dice expl&iacute;citamente qu&eacute; no demuestra.
+  </p>
+</div></footer>
+
+<script>
+  (function(){
+    var raiz = document.documentElement;
+    var botones = document.querySelectorAll(".idiomas button");
+    var titulos = {
+      en: "Measured on a machine it had never seen — Eyes",
+      es: "Medido en una máquina que no había visto nunca — Eyes"
+    };
+    function aplicar(idioma){
+      raiz.setAttribute("data-idioma", idioma);
+      raiz.setAttribute("lang", idioma);
+      document.title = titulos[idioma] || titulos.en;
+      for (var i = 0; i < botones.length; i++){
+        botones[i].setAttribute(
+          "aria-pressed",
+          botones[i].getAttribute("data-ir") === idioma ? "true" : "false");
+      }
+      try{ localStorage.setItem("eyes-idioma", idioma); }catch(e){}
+    }
+    for (var i = 0; i < botones.length; i++){
+      botones[i].addEventListener("click", function(){
+        aplicar(this.getAttribute("data-ir"));
+      });
+    }
+    var guardado = null;
+    try{ guardado = localStorage.getItem("eyes-idioma"); }catch(e){}
+    aplicar(guardado || ((navigator.language || "en").slice(0,2) === "es" ? "es" : "en"));
+  })();
+</script>
+</body>
+</html>
